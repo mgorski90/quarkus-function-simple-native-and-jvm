@@ -2,9 +2,9 @@ Simple example how to set-up classic AWS Lambda with Quarkus. Tested both with J
 
 To run native:
 $ mvn clean package -DskipTests -P native
-$ sam local -g -t sam.native.yml
+$ sam deploy -g -t sam.native.yml
 
 To run JVM:
 $ mvn clean package -DskipTests
-$ sam local -g -t sam.jvm.yml
+$ sam deploy -g -t sam.jvm.yml
 
