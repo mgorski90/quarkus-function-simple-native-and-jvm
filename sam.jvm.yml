@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Serverless Quarkus HTTP - simple pure JVM function with Quarkus
+
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: Api Gateway for Quarkus demo
+      StageName: prod
+
+  CapitalizeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest
+      Runtime: java11
+      CodeUri: target/lambda-quarkus-function-1.0-SNAPSHOT-runner.jar
+      MemorySize: 256
+      Timeout: 15
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      Events:
+        Capitalize:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /capitalize
+            Method: POST
+
+Outputs:
+  CapitalizeFunction:
+    Description: URL for application
+    Value: !Sub 'https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/prod/'
+    Export:
+      Name: CapitalizeFunctionApi

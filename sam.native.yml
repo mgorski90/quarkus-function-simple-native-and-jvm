@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Serverless Quarkus HTTP - simple pure native function with Quarkus
+
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: Api Gateway for Quarkus demo
+      StageName: Test
+
+  CapitalizeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: not.used.in.provided.runtime
+      Runtime: provided
+      CodeUri: target/function.zip
+      MemorySize: 256
+      Timeout: 15
+      Environment:
+        Variables:
+          DISABLE_SIGNAL_HANDLERS: true
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      Events:
+        Capitalize:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /capitalize
+            Method: POST
+
+Outputs:
+  CapitalizeFunction:
+    Description: URL for application
+    Value: !Sub 'https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/Test/'
+    Export:
+      Name: CapitalizeFunctionApi

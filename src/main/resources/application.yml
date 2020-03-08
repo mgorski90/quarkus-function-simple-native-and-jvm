@@ -1,0 +1,7 @@
+quarkus:
+  package:
+    uber-jar: true
+  lambda:
+    handler: capitalizer
+    ssl:
+      native: true
